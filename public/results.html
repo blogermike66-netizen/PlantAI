@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Results - PlantAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  :root{--dark:#0b2118;--deep:#146c3c;--green:#22a65a;--mint:#6ee7a0;--muted:#5d6b63}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Poppins,system-ui,sans-serif;background:#fff;color:#14231b;line-height:1.55}
+  a{color:inherit;text-decoration:none}
+  hidden,[hidden]{display:none!important}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid #e8eeea}
+  .logo{font-size:22px;font-weight:600;color:var(--dark)}
+  nav ul{display:flex;gap:30px;list-style:none;font-size:14px}
+  main{max-width:1100px;margin:0 auto;padding:24px 30px 50px}
+  .back{font-size:13px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:380px 1fr;gap:26px;margin-top:16px;align-items:start}
+  .card{background:#fff;border:1px solid #e3ebe6;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+  .photoWrap{position:relative}
+  .photoWrap img{width:100%;border-radius:10px;display:block;max-height:420px;object-fit:cover}
+  .badge{position:absolute;top:10px;left:10px;background:var(--mint);color:var(--dark);font-size:12px;font-weight:600;padding:3px 12px;border-radius:999px}
+  .conf{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:13px}
+  .bar{flex:1;height:10px;background:#e6efe9;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--green);border-radius:99px}
+  .pct{border:1px solid #e3ebe6;border-radius:8px;padding:4px 10px;font-weight:600}
+  .head{background:#eef7f1;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+  .head h1{font-size:24px;line-height:1.2}
+  .head small{color:var(--muted)}
+  .lbl{font-size:12px;font-weight:600;color:#d62828}
+  .lbl.ok{color:var(--deep)}
+  .dname{font-size:20px;font-weight:600}
+  .dname+small{display:block;color:var(--muted);font-style:italic}
+  .sev{display:inline-block;margin-top:6px;font-size:13px}
+  .pill{display:inline-block;padding:1px 14px;border-radius:999px;font-weight:600;font-size:12px;margin-left:8px}
+  .Low{background:#c9f2d6}.Moderate{background:#ffd966}.High{background:#ff9d8f}
+  h2{font-size:15px;margin:18px 0 8px;color:var(--dark)}
+  ul.ck{list-style:none;font-size:13.5px}
+  ul.ck li{padding:3px 0 3px 24px;position:relative}
+  ul.ck li::before{content:"\2713";position:absolute;left:0;color:var(--green);font-weight:700}
+  .tip{background:#fff6d6;border-radius:10px;padding:12px 14px;margin-top:16px;font-size:13px}
+  .tip b{display:block;margin-bottom:2px}
+  .tip ul{margin-left:18px}
+  .more{display:inline-block;margin-top:18px;background:var(--deep);color:#fff;padding:10px 24px;border-radius:999px;font-size:14px;font-weight:500}
+  .grow{margin-top:24px}
+  .grow div{padding:9px 0;border-bottom:1px solid #edf2ee;font-size:14px}
+  .grow small{display:block;color:var(--muted);font-size:12.5px}
+  
+  @media(max-width:720px){
+    nav{padding:14px 16px!important;flex-wrap:wrap;gap:10px}
+    nav ul{gap:14px!important;font-size:13px!important;flex-wrap:wrap}
+    .logo{font-size:20px!important}
+  }
+  @media(max-width:820px){
+    main{padding:18px 16px 36px}
+    .grid{grid-template-columns:1fr;gap:18px}
+    .head h1{font-size:21px}
+    .card{padding:14px}
+    .more{display:block;text-align:center}
+  }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="logo" href="index.html">PlantAI</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="scans.html">Your Scans</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <a class="back" href="plantAi.html">← Scan Another</a>
+
+    <p id="empty" hidden style="margin-top:20px">No scan yet. <a href="plantAi.html" style="color:var(--deep)">Scan a plant</a>.</p>
+
+    <div id="view" class="grid" hidden>
+      <div class="card">
+        <div class="photoWrap"><span class="badge">Analyzed</span><img id="photo" alt="Scanned plant"></div>
+        <div class="conf" id="confRow">Confidence <div class="bar"><i id="bar"></i></div><span class="pct" id="pct"></span></div>
+      </div>
+
+      <div class="card">
+        <div class="head"><h1 id="pname"></h1><small id="psci"></small></div>
+
+        <div id="legacy" hidden style="white-space:pre-wrap"></div>
+
+        <div id="full">
+          <div class="lbl" id="dlabel"></div>
+          <div class="dname" id="dname"></div>
+          <small id="dsci"></small>
+          <div class="sev" id="sevRow">Severity <span class="pill" id="sev"></span></div>
+
+          <div id="symBox"><h2>Symptoms</h2><ul class="ck" id="sym"></ul></div>
+          <div id="treatBox"><h2 id="treatTitle">Suggested Treatment</h2><ul class="ck" id="treat"></ul></div>
+          <div class="tip" id="prevBox"><b>Prevention Tips</b><ul id="prev"></ul></div>
+        </div>
+
+        <a class="more" href="plant.html">About this plant ›</a>
+      </div>
+    </div>
+
+    <div class="card grow">
+      <h2 style="margin-top:0">Quick Growing Tips</h2>
+      <div>Check leaves regularly<small>Catch diseases early before they spread.</small></div>
+      <div>Keep plants well-watered<small>Avoid overwatering and poor drainage.</small></div>
+      <div>Use clean tools<small>Prevent spreading diseases between plants.</small></div>
+      <div>Choose resistant varieties<small>Some plants are more resistant to common diseases.</small></div>
+    </div>
+  </main>
+
+<script>
+const scans = JSON.parse(localStorage.getItem("scans") || "[]");
+const scan = scans[Number(localStorage.getItem("open") || 0)];
+const $ = (id) => document.getElementById(id);
+
+function fill(ul, items){
+  ul.innerHTML = "";
+  (items || []).forEach(t => { const li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+}
+
+if (!scan) {
+  $("empty").hidden = false;
+} else {
+  $("view").hidden = false;
+  $("photo").src = scan.image;
+  const r = scan.result;
+
+  if (!r) {                                   // older scans saved as plain text
+    $("pname").textContent = "Result";
+    $("confRow").hidden = true;
+    $("full").hidden = true;
+    $("legacy").hidden = false;
+    $("legacy").textContent = scan.text || "";
+  } else {
+    const p = r.plant || {}, h = r.health || {};
+    const sick = h.status === "diseased" && h.disease;
+
+    $("pname").textContent = p.name || "Unknown plant";
+    $("psci").textContent = p.scientific_name || "";
+
+    $("dlabel").textContent = sick ? "Disease Detected" : "Plant looks healthy";
+    $("dlabel").className = "lbl" + (sick ? "" : " ok");
+    $("dname").textContent = sick ? h.disease : "No disease found";
+    $("dsci").textContent = sick ? (h.disease_scientific_name || "") : "";
+
+    $("sevRow").hidden = !(sick && h.severity);
+    $("sev").textContent = h.severity || "";
+    $("sev").className = "pill " + (h.severity || "");
+
+    const c = Math.max(0, Math.min(100, Number(h.confidence) || 0));
+    $("bar").style.width = c + "%";
+    $("pct").textContent = c + "%";
+
+    fill($("sym"), h.symptoms);   $("symBox").hidden = !(h.symptoms || []).length;
+    $("treatTitle").textContent = sick ? "Suggested Treatment" : "Care Tips";
+    fill($("treat"), h.treatment); $("treatBox").hidden = !(h.treatment || []).length;
+    fill($("prev"), h.prevention); $("prevBox").hidden = !(h.prevention || []).length;
+  }
+}
+</script>
+</body>
+</html>

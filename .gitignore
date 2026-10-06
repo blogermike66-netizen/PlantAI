@@ -1,0 +1,10 @@
+.env
+node_modules
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+!back.JPG
+api.txt

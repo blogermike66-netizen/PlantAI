@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scan Your Plant - PlantAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  :root{--dark:#0b2118;--deep:#146c3c;--green:#22a65a;--mint:#6ee7a0;--muted:#5d6b63}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Poppins,system-ui,sans-serif;background:#fff;color:#14231b}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;border:0}
+  button:disabled{opacity:.6;cursor:wait}
+  .i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid #e8eeea}
+  .logo{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:600;color:var(--dark)}
+  .logo .i{width:28px;height:28px;color:var(--green)}
+  nav ul{display:flex;gap:34px;list-style:none;align-items:center;font-size:14px}
+  .user{width:34px;height:34px;border-radius:50%;border:1px solid #d9e3dd;display:grid;place-items:center}
+
+  main{max-width:1180px;margin:0 auto;padding:26px 40px 40px}
+  .back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+  .back .i{width:14px;height:14px}
+  .scan{display:grid;grid-template-columns:1fr 330px;gap:90px;margin-top:14px}
+  h1{font-size:34px;font-weight:700;color:var(--dark)}
+  .sub{font-size:14px;line-height:1.6;color:#33443a;margin:8px 0 26px}
+
+  #dropBox{position:relative;isolation:isolate;overflow:hidden;height:270px;border:1.5px dashed #8fd3a9;border-radius:8px;background:#f3fbf5;display:grid;place-content:center;text-align:center;cursor:pointer}
+  #dropBox::before,#dropBox::after{content:"";position:absolute;inset:0;background-position:center;background-repeat:no-repeat;pointer-events:none}
+  #dropBox::before{z-index:-2;background-image:var(--fill,none);background-size:cover}
+  #dropBox::after{z-index:-1;background-image:var(--photo,none);background-size:contain}
+  #dropBox.has-photo::before{filter:blur(20px);transform:scale(1.2)}
+  #dropBox.has-photo .hint{display:none}
+  #dropBox.dragover{background-color:#e3f6e9}
+  .hint .circ{width:58px;height:58px;border-radius:50%;background:#e1f4e7;color:var(--green);display:grid;place-items:center;margin:0 auto 14px}
+  .hint .circ .i{width:28px;height:28px}
+  .hint strong{font-weight:500;font-size:15px}
+  .hint p{font-size:13px;color:#4c5d53}
+  .hint small{font-size:11px;color:#8b9a91}
+
+  .or{display:flex;align-items:center;gap:14px;font-size:12px;color:#7a8a80;margin:26px 0}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:#d6e0da}
+  .take{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--deep);color:#fff;height:46px;border-radius:999px;font-size:16px;font-weight:500}
+  .row{display:flex;gap:12px;margin-top:12px}
+  .row button{flex:1;height:40px;border-radius:999px;font-size:14px;font-weight:500}
+  #takeIt{background:#fff;border:1.5px solid var(--deep);color:var(--deep)}
+  #identify{background:var(--mint);color:var(--dark)}
+  #answer{margin-top:14px;font-size:14px;white-space:pre-wrap}
+
+  .phoneWrap{text-align:center}
+  .phone{position:relative;height:500px;border:7px solid #0d0f0e;border-radius:34px;overflow:hidden;background:#2f6b2a}
+  .phone::before{content:"";position:absolute;top:8px;left:50%;width:60px;height:14px;margin-left:-30px;border-radius:9px;background:#0d0f0e;z-index:3}
+  .phone>svg.leaf{position:absolute;inset:0;width:100%;height:100%}
+  #cameraFeed{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+  .focus{position:absolute;inset:16% 12%;width:76%;height:68%;z-index:2}
+  .phoneWrap small{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
+  
+  .scan>*{min-width:0}
+  @media(max-width:820px){
+    nav{padding:14px 16px;flex-wrap:wrap;gap:10px}
+    nav ul{gap:14px;font-size:13px;flex-wrap:wrap}
+    .logo{font-size:20px}
+    main{padding:18px 16px 30px}
+    .scan{grid-template-columns:1fr;gap:32px}
+    h1{font-size:26px}
+    .sub br{display:none}
+    #dropBox{height:220px}
+    .row{flex-wrap:wrap}
+    .row button{min-width:130px}
+    .phone{height:380px;max-width:260px;margin:0 auto}
+  }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+    <symbol id="camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+    <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+    <symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  </svg>
+
+  <nav>
+    <a class="logo" href="index.html"><svg class="i"><use href="#leaf"/></svg>PlantAI</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Help</a></li>
+      <li><a class="user" href="scans.html" title="Your scans"><svg class="i" style="width:18px;height:18px"><use href="#user"/></svg></a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <a class="back" href="index.html"><svg class="i"><use href="#back"/></svg>Back to Home</a>
+
+    <div class="scan">
+      <section>
+        <h1>Scan Your Plant</h1>
+        <p class="sub">Upload a photo or take a picture of the plant leaf.<br>Make sure it's clear and well lit for the best results.</p>
+
+        <div id="dropBox">
+          <div class="hint">
+            <div class="circ"><svg class="i"><use href="#camera"/></svg></div>
+            <strong>Click to upload a photo</strong>
+            <p>or drag and drop</p>
+            <small>JPG, PNG (Max 10MB)</small>
+          </div>
+          <input type="file" id="upload" accept="image/*" hidden>
+        </div>
+
+        <div class="or">OR</div>
+
+        <button id="shot" class="take"><svg class="i"><use href="#camera"/></svg>Take a Photo</button>
+        <div class="row">
+          <button id="takeIt">Capture</button>
+          <button id="identify">Identify Plant</button>
+        </div>
+        <div id="answer"></div>
+      </section>
+
+      <aside class="phoneWrap">
+        <div class="phone">
+          <svg class="leaf" viewBox="0 0 200 400" preserveAspectRatio="xMidYMid slice">
+            <rect width="200" height="400" fill="#2f6b2a"/>
+            <path d="M100 40C165 90 175 210 100 340C25 210 35 90 100 40Z" fill="#7bb243"/>
+            <path d="M100 60V330M100 140L65 110M100 190L140 150M100 240L62 205" stroke="#4f8a2b" stroke-width="3" fill="none"/>
+            <circle cx="112" cy="215" r="20" fill="#b9922a"/><circle cx="112" cy="215" r="10" fill="#7a4a1d"/>
+            <circle cx="78" cy="150" r="9" fill="#c9a43a"/><circle cx="130" cy="120" r="7" fill="#a67c2a"/>
+          </svg>
+          <video id="cameraFeed" autoplay playsinline muted></video>
+          <svg class="focus" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+            <path vector-effect="non-scaling-stroke" d="M2 22V2h20M78 2h20v20M98 78v20H78M22 98H2V78"/>
+          </svg>
+        </div>
+        <small>Example: leaf with disease</small>
+      </aside>
+    </div>
+  </main>
+
+<script>
+let currentFile = null;
+
+// ---------- CAMERA ----------
+const shot = document.getElementById("shot");
+const takeIt = document.getElementById("takeIt");
+const cameraFeed = document.getElementById("cameraFeed");
+
+function stopCamera(){
+  if (cameraFeed.srcObject) {
+    cameraFeed.srcObject.getTracks().forEach(t => t.stop());
+    cameraFeed.srcObject = null;
+  }
+}
+
+// tries a few camera settings; a failed attempt opens nothing, so nothing is left running
+async function openCamera(){
+  const attempts = [
+    { video: true },
+    { video: { width: 640, height: 480 } },
+    { video: { facingMode: "user" } }
+  ];
+  let firstError;
+  for (const constraints of attempts) {
+    try {
+      return await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+      firstError = firstError || e;   // keep the FIRST error, it is the real reason
+      console.warn("Camera attempt failed:", e.name, constraints);
+    }
+  }
+  throw firstError;
+}
+
+shot.addEventListener("click", async () => {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("Camera not available here. Open the page from http://localhost or https://");
+    return;
+  }
+
+  shot.disabled = true;                          // ignore double clicks
+  stopCamera();
+  await new Promise(r => setTimeout(r, 500));    // give the camera time to release
+
+  try {
+    cameraFeed.srcObject = await openCamera();
+    cameraFeed.play().catch(() => {});           // autoplay already starts it
+  } catch (error) {
+    const messages = {
+      NotAllowedError: "Camera permission is blocked. Allow it from the lock icon in the address bar, then reload.",
+      NotReadableError: "The camera is being used by another app or tab. Close it and try again.",
+      NotFoundError: "No camera was found on this device."
+    };
+    alert(messages[error.name] || "Camera error: " + error.name);
+  } finally {
+    shot.disabled = false;
+  }
+});
+
+takeIt.addEventListener("click", () => {
+  if (!cameraFeed.srcObject) {
+    alert("Click 'Take a Photo' first to start the camera");
+    return;
+  }
+  if (!cameraFeed.videoWidth) {
+    alert("The camera is still starting. Wait a second and press Capture again.");
+    return;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = cameraFeed.videoWidth;
+  canvas.height = cameraFeed.videoHeight;
+  canvas.getContext("2d").drawImage(cameraFeed, 0, 0);
+  canvas.toBlob((blob) => {
+    showImage(new File([blob], "plant.jpg", { type: "image/jpeg" }));
+    stopCamera();
+  }, "image/jpeg", 0.9);
+});
+
+// ---------- UPLOAD ----------
+const upload = document.getElementById("upload");
+const box = document.getElementById("dropBox");
+
+function showImage(file){
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    alert("Please choose an image file");
+    return;
+  }
+  currentFile = file;
+  const url = `url("${URL.createObjectURL(file)}")`;
+  box.style.setProperty("--photo", url);
+  box.style.setProperty("--fill", url);
+  box.classList.add("has-photo");
+}
+
+box.addEventListener("click", () => upload.click());
+upload.addEventListener("change", (e) => showImage(e.target.files[0]));
+box.addEventListener("dragover", (e) => { e.preventDefault(); box.classList.add("dragover"); });
+box.addEventListener("dragleave", () => box.classList.remove("dragover"));
+box.addEventListener("drop", (e) => {
+  e.preventDefault();
+  box.classList.remove("dragover");
+  showImage(e.dataTransfer.files[0]);
+});
+
+// ---------- IDENTIFY ----------
+const identifyBtn = document.getElementById("identify");
+const answer = document.getElementById("answer");
+
+function fileToDataURL(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// small copy of the photo so localStorage doesn't fill up
+function makeThumb(file){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, 400 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = img.width * scale;
+      c.height = img.height * scale;
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      resolve(c.toDataURL("image/jpeg", 0.7));
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+identifyBtn.addEventListener("click", async () => {
+  if (!currentFile) {
+    alert("Upload or take a photo first");
+    return;
+  }
+  identifyBtn.disabled = true;
+  answer.textContent = "Identifying...";
+
+  try {
+    const image = await fileToDataURL(currentFile);
+    const response = await fetch("/api/identify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image })
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      answer.textContent = "Error: " + (data.error || "something went wrong");
+      return;
+    }
+
+    if (data.result && data.result.is_plant === false) {
+      answer.textContent = "This doesn't look like a plant. Try a clearer photo of a leaf.";
+      return;
+    }
+
+    const scans = JSON.parse(localStorage.getItem("scans") || "[]");
+    scans.unshift({ image: await makeThumb(currentFile), result: data.result, date: new Date().toLocaleString() });
+    localStorage.setItem("scans", JSON.stringify(scans.slice(0, 20)));
+    localStorage.setItem("open", "0");
+    location.href = "results.html";
+  } catch (error) {
+    console.error(error);
+    answer.textContent = "Could not reach the server. Is it running?";
+  } finally {
+    identifyBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

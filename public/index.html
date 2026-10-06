@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PlantAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Caveat:wght@500&display=swap" rel="stylesheet">
+  <style>
+  :root{--dark:#0b2118;--green:#22a65a;--mint:#6ee7a0;--lime:#4ade80}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Poppins,system-ui,sans-serif;background:var(--dark);color:#fff}
+  a{color:inherit;text-decoration:none}
+  .i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  .hero{position:relative;margin:14px;border-radius:18px;overflow:hidden;min-height:calc(100vh - 28px);
+    background:linear-gradient(90deg,rgba(5,25,16,.95) 0%,rgba(5,25,16,.7) 40%,rgba(5,25,16,.1) 75%),url(back.JPG) right center/cover,#123d2b}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:22px 36px}
+  .logo{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:600}
+  .logo .i{width:28px;height:28px;color:var(--lime)}
+  nav ul{display:flex;gap:34px;list-style:none;align-items:center;font-size:14px}
+  .get{background:var(--green);padding:9px 20px;border-radius:999px;font-weight:500}
+
+  .text{padding:50px 36px 0;max-width:620px}
+  h1{font-size:58px;line-height:1.1;font-weight:700}
+  h1 em{font-style:normal;color:var(--lime)}
+  .text>p{font-size:17px;line-height:1.6;margin:26px 0 34px;color:#e6efe9}
+  .feats{display:flex;gap:30px;margin-bottom:38px}
+  .feats div{display:flex;align-items:center;gap:10px;font-size:12px;line-height:1.35}
+  .ic{width:42px;height:42px;border-radius:50%;background:var(--mint);color:var(--dark);display:grid;place-items:center}
+  .scan{display:inline-flex;align-items:center;gap:10px;background:var(--mint);color:var(--dark);padding:15px 30px;border-radius:999px;font-weight:600;font-size:17px}
+  .hand{position:absolute;right:11%;bottom:12%;font-family:Caveat,cursive;font-size:30px;line-height:1.1;transform:rotate(-12deg);text-align:center}
+  .hand svg{display:block;width:150px;margin:2px auto 0}
+
+  .cta{margin:14px;border-radius:18px;overflow:hidden;background:linear-gradient(90deg,rgba(5,25,16,.92),rgba(5,25,16,.3)),url(back.JPG) center/cover,#123d2b}
+  .cta-text{padding:70px 36px;max-width:520px}
+  .cta h2{font-size:38px;line-height:1.15}
+  .cta h2 em{font-style:normal;color:var(--lime)}
+  .cta p{margin:14px 0 26px;color:#dfeae3}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:18px 36px;background:rgba(5,25,16,.85);font-size:13px}
+  .foot ul{display:flex;gap:26px;list-style:none}
+  
+  @media(max-width:720px){
+    .hero{margin:8px;min-height:auto;border-radius:14px;background:linear-gradient(rgba(5,25,16,.9),rgba(5,25,16,.75)),url(back.JPG) center/cover,#123d2b}
+    nav{padding:16px 18px;flex-wrap:wrap;gap:12px}
+    nav ul{gap:14px;font-size:13px;flex-wrap:wrap}
+    .get{padding:7px 16px}
+    .text{padding:28px 20px 44px;max-width:100%}
+    h1{font-size:36px}
+    .text>p{font-size:15px;margin:18px 0 24px}
+    .text>p br{display:none}
+    .feats{flex-wrap:wrap;gap:16px;margin-bottom:28px}
+    .scan{font-size:15px;padding:13px 24px}
+    .hand{display:none}
+    .cta{margin:8px;border-radius:14px}
+    .cta-text{padding:40px 20px}
+    .cta h2{font-size:28px}
+    .foot{flex-direction:column;gap:14px;padding:18px 20px;text-align:center}
+    .foot ul{flex-wrap:wrap;justify-content:center;gap:16px}
+  }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+    <symbol id="camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+    <symbol id="bug" viewBox="0 0 24 24"><path d="m8 2 1.88 1.88M14.12 3.88 16 2M9 7.13v-1a3 3 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6zM12 20v-9M6.53 9C4.6 8.8 3 7.1 3 5M6 13H2M3 21c0-2.1 1.7-3.9 3.8-4M20.97 5c0 2.1-1.6 3.8-3.5 4M22 13h-4M17.2 17c2.1.1 3.8 1.9 3.8 4"/></symbol>
+    <symbol id="bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  </svg>
+
+  <header class="hero">
+    <nav>
+      <a class="logo" href="index.html"><svg class="i"><use href="#leaf"/></svg>PlantAI</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Help</a></li>
+        <li><a class="get" href="plantAi.html">Get Started</a></li>
+      </ul>
+    </nav>
+
+    <div class="text">
+      <h1>Identify Your Plant<br>&amp; Its <em>Disease</em></h1>
+      <p>Take a photo or upload a leaf, and let our AI tell you<br>what plant it is, what disease it has, and how to fix it.</p>
+      <div class="feats">
+        <div><span class="ic"><svg class="i"><use href="#leaf"/></svg></span>Identify<br>plant species</div>
+        <div><span class="ic"><svg class="i"><use href="#bug"/></svg></span>Detect<br>diseases</div>
+        <div><span class="ic"><svg class="i"><use href="#bulb"/></svg></span>Get treatment<br>&amp; prevention tips</div>
+      </div>
+      <a class="scan" href="plantAi.html"><svg class="i"><use href="#camera"/></svg>Scan Plant Now<svg class="i"><use href="#arrow"/></svg></a>
+    </div>
+
+    <div class="hand">Healthy plants<br>happier harvests
+      <svg viewBox="0 0 150 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 8C40 2 90 2 146 6"/></svg>
+    </div>
+  </header>
+
+  <section class="cta">
+    <div class="cta-text">
+      <h2>Healthier Plants.<br><em>Better Yields.</em></h2>
+      <p>PlantAI helps you grow smarter by identifying plant diseases early.</p>
+      <a class="scan" href="plantAi.html"><svg class="i"><use href="#camera"/></svg>Start Scanning<svg class="i"><use href="#arrow"/></svg></a>
+    </div>
+    <div class="foot">
+      <a class="logo" href="index.html" style="font-size:18px"><svg class="i"><use href="#leaf"/></svg>PlantAI</a>
+      <ul><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="#">Features</a></li><li><a href="about.html#contact">Help</a></li><li><a href="privacy.html">Privacy Policy</a></li></ul>
+      <small>© 2026 PlantAI. All rights reserved.</small>
+    </div>
+  </section>
+</body>
+</html>
