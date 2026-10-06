@@ -157,6 +157,7 @@ function stopCamera(){
 // tries a few camera settings; a failed attempt opens nothing, so nothing is left running
 async function openCamera(){
   const attempts = [
+    { video: { facingMode: { ideal: "environment" } } },   // phone: back camera (laptop falls back to its webcam)
     { video: true },
     { video: { width: 640, height: 480 } },
     { video: { facingMode: "user" } }
